@@ -1,0 +1,30 @@
+\frametitle{Carregando Dados}
+\begin{onlyenv}<1>
+\begin{block}{Insert}
+    \begin{lstlisting}[language=XML]
+    <changeSet id="2" author="marilia">
+        <insert schemaName="nome-esquema" tableName="tabelaB">
+            <column name="descricao">O registro foi finalizado</column>
+            <column name="id_tabelaA">
+                (SELECT id FROM tabelaA WHERE codigo='FINALIZADO')
+            </column>
+        </insert>
+    </changeSet>
+    \end{lstlisting}
+\end{block}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{block}{Load}
+    \begin{lstlisting}[language=XML]
+        <changeSet id="2" author="marilia">
+            <loadData file="db.changelogs/dados.csv"
+                schemaName="nome_esquema" quotchar="'" tableName="tabelaA"/>
+        </changeSet>
+    \end{lstlisting}
+\end{block}
+\normalsize \textcolor{jeans}{dados.csv} \\
+\tiny \textbf{Codigo,Descricao} \\
+\tiny 'EFETIVADO','Item finalizado' \\
+\tiny 'AUTORIZADO','Item autorizado' \\
+\tiny 'CANCELADO','Item Cancelado' \\
+\end{onlyenv}

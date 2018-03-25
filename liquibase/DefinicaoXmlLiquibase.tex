@@ -1,0 +1,52 @@
+\definecolor{gray}{rgb}{0.4,0.4,0.4}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.6}
+\definecolor{cyan}{rgb}{0.0,0.6,0.6}
+
+\lstset{
+  basicstyle=\tiny\ttfamily,
+  columns=fullflexible,
+  showstringspaces=false,
+  commentstyle=\color{jeans}\upshape
+}
+
+\newcommand{\functionDefHighlight}[1]{
+\bfseries\textcolor{blue}{>} 
+%\textcolor{purple}{\mdseries #1}
+%\bfseries\textcolor{blue}{<} 
+}
+
+
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  %moredelim=[s][\bfseries\color{blue}]{<}{\ },
+  %moredelim=[s][\bfseries\color{blue}]{</}{>},
+  %moredelim=[l][\bfseries\color{blue}]{/>},
+  %moredelim=[l][\bfseries\color{blue}]{>},
+  %moredelim=[s][\bfseries\color{blue}]{>}{<},
+  %literate = *{>}{\textcolor{red}>}1
+  %  					{<}{\textcolor{red}<}1,
+ morecomment=[s]{>}{<},
+  morecomment=[s]{<?}{?>},
+  stringstyle=\color{crimsonred},
+  identifierstyle=\color{blue},
+  keywordstyle=\color{cyan},
+ %alsoletter={/, </,>},
+ alsoletter={', :,<},
+  %moredelim=[s][\color{black}]{>}{<},
+  ndkeywords={=, <dbms, \'onFail\'},
+  morekeywords={
+  xmlns, 
+  xmlns:xsi,
+  xsi:schemaLocation,
+  dbms, 
+  comments,
+  version, 
+  file,
+  relativeToChangelogFile, 
+  type, 
+  username,
+  id,
+  author, onFail,onError,onUpdateSQL,onFailMessage,onErrorMessage, expectedResult, schemaName, tableName, name, columnName, columnNames, viewName,catalogName, foreignKeyName,constraintName,baseColumnNames,baseTableName,referencedColumnNames, referencedTableName,replaceIfExists,primaryKey,nullable,unique, autoIncrement, newColumnName,oldColumnName},
+  sensitive=true
+}
