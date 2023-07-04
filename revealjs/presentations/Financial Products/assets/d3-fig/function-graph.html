@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+</head>
+
+<style>
+  .axisWhite line {
+    stroke: white;
+  }
+
+  .axisWhite path {
+    stroke: white;
+  }
+
+  .axisWhite text {
+    fill: white;
+  }
+</style>
+
+<script src="js/d3.v7.min.js"></script>
+<script src="line.js"></script>
+<body>
+
+  
+ <script>
+    let startPrice = 1000;
+    let premium = 100;
+    let strikePrice = 1000;
+
+    function calculateCostToBuy(marketPrice) {
+      
+      //let priceDiff = marketPrice - strikePrice;
+      let price = marketPrice;
+      if (marketPrice > strikePrice) {
+        price = strikePrice;
+      }
+      let costToBuyNow = (price + premium);
+
+      return costToBuyNow;
+    }
+
+    function profitComparedToMarketDateNotUsingCallOption(marketPrice) {
+      let costToBuyNow = calculateCostToBuy(marketPrice);
+      let profitComparedToMarketDate = startPrice - marketPrice; //-> estrategia de esperar pra comprar
+      return profitComparedToMarketDate;
+    }
+
+    function profitComparedToStartDate(marketPrice) {
+      let costToBuyNow = calculateCostToBuy(marketPrice);
+      let profitComparedToStartDate = startPrice - costToBuyNow;//estategia call option em relacao a ter comprado no inicio
+      return profitComparedToStartDate;
+    }
+
+    function profitComparedToMarketDate(marketPrice) {
+      let costToBuyNow = calculateCostToBuy(marketPrice);
+      let startPrice = 1000;
+      let profitComparedToMarketDate = marketPrice - costToBuyNow;
+      //let profitComparedToMarketDate = startPrice - marketPrice; -> estrategia de esperar pra comprar
+      //let profitComparedToMarketDate = (startPrice - costToBuyNow) - (startPrice - marketPrice); -> estrategia de esperar pra comprar VS call option
+      return profitComparedToMarketDate;
+    }
+
+
+    const profitFunctions = [profitComparedToStartDate, profitComparedToMarketDate, profitComparedToMarketDateNotUsingCallOption]
+    const xRange = [800, 1200] 
+    const yRange = [-200, 200] 
+    const colors = ["teal", "pink", "green"]
+    const graph = functionGrahph(profitFunctions, colors, xRange, yRange)
+
+    var _transitions = [
+      {
+        transitionForward: () => {
+          addVerticalLineAt(900, "lineAt900", graph.svg, graph.xScale, graph.yScale, [yRange[0], 0])
+        },
+        transitionBackward: () => {
+          removeVerticalLineAt("lineAt900", graph.svg)
+        },
+        index: 1
+      },
+      {
+        transitionForward: () => {
+          addVerticalLineAt(1000, "lineAt1000", graph.svg, graph.xScale, graph.yScale, [yRange[0], 0])
+          removeVerticalLineAt("lineAt900", graph.svg)
+        },
+        transitionBackward: () => {
+          removeVerticalLineAt("lineAt1000", graph.svg)
+          addVerticalLineAt(900, "lineAt900", graph.svg, graph.xScale, graph.yScale, [yRange[0], 0])
+        },
+        index: 2
+      },
+      {
+        transitionForward: () => {
+          addVerticalLineAt(1050, "lineAt1050", graph.svg, graph.xScale, graph.yScale, [yRange[0], 0])
+          removeVerticalLineAt("lineAt1000", graph.svg)
+        },
+        transitionBackward: () => {
+          removeVerticalLineAt("lineAt1050", graph.svg)
+          addVerticalLineAt(1000, "lineAt1000", graph.svg, graph.xScale, graph.yScale, [yRange[0], 0])
+        },          
+        index: 3
+      },
+      {
+        transitionForward: () => {
+          addVerticalLineAt(1100, "lineAt1100", graph.svg, graph.xScale, graph.yScale, [yRange[0], 0])
+          removeVerticalLineAt("lineAt1050", graph.svg)
+        },
+         transitionBackward: () => {
+          removeVerticalLineAt("lineAt1100", graph.svg)
+          addVerticalLineAt(1050, "lineAt1050", graph.svg, graph.xScale, graph.yScale, [yRange[0], 0])
+         },
+        index: 4
+      },
+    ]
+
+
+  </script>
+</body>

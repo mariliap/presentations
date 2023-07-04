@@ -1,0 +1,329 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Derivatives</title>
+
+		<link rel="stylesheet" href="../../presentation-base/dist/reset.css">
+		<link rel="stylesheet" href="../../presentation-base/dist/reveal.css">
+		<link rel="stylesheet" href="../../assets/themes/moon-night.css" id="theme">
+
+		<link rel="stylesheet" href="./assets/css/arquitetura-e-parcerias.css" id="this-presentation-theme">
+    <link rel="stylesheet" href="./assets/css/custom-gc.css" id="custom-gc">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="../../presentation-base/plugin/highlight/monokai.css" id="highlight-theme">
+	</head>
+	<body> 
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<a href="https://revealjs.com">
+						<img src="./assets/img/eparcerias-logo.png" alt="logo" style="height: 180px; margin: 0 auto 4rem auto; background: transparent;" class="demo-logo">
+					</a>
+					
+					<h2>Titulo</h2>
+					<h3>Subtitulo</h3>
+					<h5>Lugar</h5>
+					<p>
+						<small>Criado por <a href="">Marília Portela de Lima</a></small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Introdução</h2>
+				</section>
+
+				<section>
+					<h2>Arquitetura</h2>
+				</section>
+
+				<section>
+					<img  data-src="./assets/img/arquitetura-e-parcerias.svg" alt="imagem da arquitetura" width="auto-size" height="700px" style="margin: 0 auto 4rem auto; background: transparent;" class="demo-logo">
+				</section>
+
+				<section>
+					<section>
+						<h2>1.7 - Execução e Debug</h2>
+						<h3>Native vs JVM</h3>
+					</section>
+					<section>
+						<h2>1.7 - Execução e Debug</h2>
+						<h3>(Native)</h3> 
+						
+						<p><small>Para  gerar o executável nativo:</small></p>
+						<pre><code>$ ./mvnw clean package -Pnative</code></pre> 
+	
+						<p><small>Que executará o profile native definido no pom.xml. 
+							No momento, o e-Parcerias não está preparado para build nativo. 
+							Para mais informações acesse <a href="https://quarkus.io/guides/building-native-image">Build para aplicação nativa</a>.
+						</small></p>
+						<p><small>
+						*Caso não conheça o mvnw, acesse <a href="https://github.com/takari/maven-wrapper">github.com/takari/maven-wrapper</a>.
+						</small></p>
+					</section>
+					<section>
+						<h2>1.7 - Execução e Debug</h2>
+						<h3>(JVM)</h3>
+						<p><small>Execute o sistema em modo dev com o comando:</small></p>
+	
+						<pre><code>$ ./mvnw compile quarkus:dev</code></pre> 
+	
+						<p><small>O aplicativo pode ser empacotado num arquivo executável (jar) usando:</small></p>
+	
+						<pre><code>$ ./mvnw clean package</code></pre> 
+	
+						<p><small>E, então, pode ser executado em modo prod usando:</small></p>
+	
+						<pre><code>$ java -jar target/[nome da aplicação]-runner.jar</code></pre> 
+					</section>
+					<section>
+						<h2>1.7 - Execução e Debug</h2>
+						<h3>(JVM)</h3>
+						<p><small>Inicie o sistema em modo debug, configurando uma porta específica:</small></p>
+						<pre><code >$ ./mvnw quarkus:dev -Ddebug=5091</code></pre> 
+						<p><small>Por padrão, o e-Parcerias está usando a seguinte convenção para portas de serviços:</small></p>
+						<table>
+							<thead>
+								<tr>
+									<th>Projeto</th>
+									<th>Porta HTTP</th>
+									<th>Porta Debug</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>e-parcerias-api-config</td>
+									<td>8090</td>
+									<td>5090</td>
+								</tr>
+								<tr>
+									<td>e-parcerias-api-seguranca</td>
+									<td>8091</td>
+									<td>5091</td>
+								</tr>
+								<tr>
+									<td>e-parcerias-api-comuns</td>
+									<td>8092</td>
+									<td>5092</td>
+								</tr>
+								<tr>
+									<td>e-parcerias-api-anexo</td>
+									<td>8093</td>
+									<td>5093</td>
+								</tr>
+								<tr>
+									<td>e-parcerias-api-monitoramento</td>
+									<td>8094</td>
+									<td>5094</td>
+								</tr>
+							</tbody>
+						</table>
+					</section>
+					<section>
+						<h2>1.7 - Execução e Debug</h2>
+						<p><small>Configuração de Execução na IDE, para executar a aplicação em modo debug numa porta específica:</small></p>
+						<img  data-src="./assets/img/runConfigIntellij.png" alt="imagem cofig intellij"  style="margin: 0 auto 4rem auto; background: transparent;" class="demo-logo">
+						<p><small>Crie uma configuração de debug para casa projeto (api-comuns, api-anexos, etc), cada uma com sua porta específica.</small></p>
+
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>1.8 - Configurações (application.properties)</h2>
+						<small>
+							<ul>
+								<li>Por padrão, o Quarkus lê application.properties para obter as configurações dos sistema</li>
+							
+								<pre><code data-trim data-noescape>
+									quarkus.datasource.jdbc.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+									quarkus.datasource.username=${DB_USER}
+									quarkus.datasource.password=${DB_PASSWORD}
+
+									#Config apis
+									api.antigo=${ANTIGO_HOST}
+									api.autenticacao=e-parcerias-autenticacao
+									api.comuns=e-parcerias-comuns
+									api.anexos=e-parcerias-anexos
+								</code></pre> 
+
+								<li>É possível utilizar profiles de configuração, utilizando o sufixo <em>%nome_profile</em> antes da propriedade, como mostrado abaixo com o sufixo <em>%local</em> para as propriedades de datasource:</li>
+								<pre><code data-trim data-noescape>
+									#LOCAL
+									%local.quarkus.datasource.jdbc.url=jdbc:postgresql://localhost:5432/l_scc1
+									%local.quarkus.datasource.username=postgres
+									%local.quarkus.datasource.password=Adm#
+									%local.api.antigo=http://localhost:8080
+								</code></pre> 
+							</ul>
+						</small>
+					</section>
+					<section>
+						<h2>1.8 - Configurações (application.properties)</h2>
+						<p><small>Para executar a aplicação usando um dos profiles criados:</small></p>
+						<pre><code >$ ./mvnw compile -Dquarkus-profile=local quarkus:dev</code></pre> 
+
+						<p><small>Para executar a aplicação setando variáveis de ambiente:</small></p>
+						<pre><code >$ ./mvnw compile quarkus:dev -DANTIGO_HOST=https://desenvolvimento.e-parcerias.cge.ce.gov.br</code></pre>
+					</section>
+					<section>
+						<h2>1.8 - Configurações (application.properties)</h2>
+						<p><small>
+							Algumas propriedades podem ser substituídas em tempo de execução. 
+							Um exemplo é a URL do banco de dados, nome de usuário e senha, que só são conhecidos especificamente em seu ambiente de destino.
+						</small></p>
+						<small>
+							<ul>
+								<li>Para um -runner jar:
+									<pre><code >$ java -Dquarkus.datasource.password=youshallnotpass -jar target/myapp-runner.jar</code></pre> 
+								</li>
+								<li>Para um -runner nativo:
+									<pre><code >$ ./target/myapp-runner -Dquarkus.datasource.password=youshallnotpass</code></pre>
+								</li>
+							</ul>
+						</small>
+						
+						<p><small>Para mais informações sobre configurações no quarkus, acesse: <a href="https://quarkus.io/guides/config">quarkus.io/guides/config</a>
+						<br/>Para conhecer as propriedades disponíveis, acesse: <a href="https://quarkus.io/guides/all-config">quarkus.io/guides/all-config</a></small></p>
+
+					</section>
+				</section>
+				<section>
+					<h2>1.9 - Validação e Verificação de Regras</h2>
+					<small>
+						<ol>
+							<li>Validação de constraints usando anotações</li>
+							<li>Verificação de regras sobre a entidade recebida no request (extends ServiceVO)</li>
+							<li>Verificação de regras sobre a entidade de banco, preenchida com os dados que irão ser inseridos (extends AppEntity)</li>
+						</ol>
+					</small>
+					
+				</section>
+
+				
+				<section>
+					<h3>Independent transitions</h3> 
+					
+					 <div class="row no-margin-top" >
+						<div class="col-40 no-margin-top" >
+              <span class="big">(transition on <span class="warning">1</span> and <span class="warning">3</span> and automatic
+                transition on slide change)</span>
+							<div class="fig-container no-margin-top" data-preload data-file="assets/d3-fig/rainbow.html"></div>
+            </div>
+            <div class="col-60 no-margin-top" >
+              <span class="big">(transition on <span class="warning">2</span> and <span class="warning">3</span>)</span>
+							<div class="fig-container no-margin-top" data-file="assets/d3-fig/bar-chart.html"></div>
+						</div>
+						<div class="no-margin-top" style="position: absolute; top: 550px">
+							<p>
+								Stage transitions independently for each visualization using Reveal.js 'data-fragment-index' (press right arrow or space)
+							</p>
+						</div>
+					</div>
+				</section>
+				
+        <section>
+          <section>
+            <h2>Options</h2>
+            <img class="r-frame" style="background: rgba(255,255,255,0.1);" width="178" height="238"
+              data-src="https://static.slid.es/reveal/arrow.png" alt="Down arrow">
+          </section>
+          <section>
+            <h2>Options</h2>
+            <h3>Call Options</h3>
+            <div class="row no-margin-top">
+              <div class="col-50 no-margin-top">
+                <div class="fig-container no-margin-top" data-file="./assets/d3-fig/function-graph.html"></div>
+              </div>
+              <!-- <div class="col-50 no-margin-top">
+                <div class="fig-container no-margin-top" data-file="./assets/d3-fig/function-graph.html"></div>
+              </div> -->
+              <p>verde: qual o meu lucro de comprar hoje (expiry date) se não tivesse comprado a call option</p>
+              <p>azul: qual o meu lucro de comprar hoje (expiry date), considerando que adquiri a call option</p>
+              <p>rosa: qual o meu lucro de comprar hoje (expiry date), considerando que adquiri a call option,
+                em comparação a se não a tivesse comprado</p>
+            </div>
+          </section>
+          <section>
+            <h2>Options</h2>
+            <h3>Put Options</h3>
+            <div class="row no-margin-top">
+              <div class="col-50 no-margin-top">
+                <div class="fig-container no-margin-top" data-file="./assets/d3-fig/function-graph.html"></div>
+              </div>
+              <!-- <div class="col-50 no-margin-top">
+                          <div class="fig-container no-margin-top" data-file="./assets/d3-fig/function-graph.html"></div>
+                        </div> -->
+            </div>
+          </section>
+        </section>
+
+        <section>
+          <div class="fig-container" data-file="./assets/d3-fig/gooey.html"></div>
+        </section>
+			</div> 
+		</div>
+
+		<script src="../../presentation-base/dist/reveal.js"></script>
+		<script src="../../presentation-base/plugin/notes/notes.js"></script>
+		<script src="../../presentation-base/plugin/markdown/markdown.js"></script>
+		<script src="../../presentation-base/plugin/highlight/highlight.js"></script>
+
+		<script src="../../presentation-base/plugin/math/math.js"></script>
+		<script src="../../presentation-base/plugin/d3/reveald3.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+				
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath, Reveald3 ],
+				
+				controls: true,
+				progress: true,
+				history: true,
+				center: false,
+				transition: 'fade',
+				viewDistance: 3, // to lazy load iframes
+
+				
+
+				// // optional configurations for reveald3
+				reveald3: {
+
+					 // If the previous slide is a slide further in the deck (i.e. we come back to
+					 // slide from the next slide), by default the last fragment transition will be
+					 // triggered to to get the last state of the visualization and simulate the
+					 // the state the simulation was in when we left the slide. This can be
+					 // discarded.
+					 runLastState: true, //default true
+
+					 // If a special onSlideChanged transition has been set (if for example the visualization
+					 // has been preloaded using the data-preload attribute, and you want a specific transition
+					 // to happen only when you arrive on the slide), you can choose the delay with which such 
+					 // a transition will occur (note that in the case of no data-preload, if no delay is set then
+					 // the transition might not occur since the iframe might not be fully loaded yet when the 
+					 // function is triggered). // default 0. 
+					 onSlideChangedDelay: 400,
+
+					 // This will prefix the path attributes of the source html paths with the given path.
+					 // (by default "src" if set to true or with the specified path if string)
+					 mapPath: false, // default: false
+
+					 // If true, will try to locate the file at a fallback url without the mapPath prefix in case no file is found
+					 // at the stipulated url with mapPath
+					 tryFallbackURL: false, //default false
+
+					 // Checking for file existance has been reported to fail in rare 
+					 // cases though files did exist. This option is to disable the file checking.
+					 //see: https://github.com/gcalmettes/reveal.js-d3/issues/10
+					 disableCheckFile: false, //default false,
+				},
+			});
+		</script>
+	</body>
+</html>
