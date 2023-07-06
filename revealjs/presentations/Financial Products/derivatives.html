@@ -8,7 +8,7 @@
 
 		<link rel="stylesheet" href="../../presentation-base/dist/reset.css">
 		<link rel="stylesheet" href="../../presentation-base/dist/reveal.css">
-		<link rel="stylesheet" href="../../assets/themes/moon-night.css" id="theme">
+		<link rel="stylesheet" href="./assets/themes/moon-night-exadel.css" id="theme">
 
 		<link rel="stylesheet" href="./assets/css/arquitetura-e-parcerias.css" id="this-presentation-theme">
     <link rel="stylesheet" href="./assets/css/custom-gc.css" id="custom-gc">
@@ -240,10 +240,23 @@
               <!-- <div class="col-50 no-margin-top">
                 <div class="fig-container no-margin-top" data-file="./assets/d3-fig/function-graph.html"></div>
               </div> -->
-              <p>verde: qual o meu lucro de comprar hoje (expiry date) se não tivesse comprado a call option</p>
-              <p>azul: qual o meu lucro de comprar hoje (expiry date), considerando que adquiri a call option</p>
-              <p>rosa: qual o meu lucro de comprar hoje (expiry date), considerando que adquiri a call option,
-                em comparação a se não a tivesse comprado</p>
+			  <button class="btn-large btn-warning" id="recolorButton">Recolorize</button>
+				
+              <p font-size="xx-small">verde: qual o meu lucro de comprar o ativo hoje (expiry date),
+				sem a call option, 
+				em comparação a se eu NÃO tivesse esperado pra comprar o ativo 
+				(valor inicial = 1000)
+			  </p>
+              <p >azul: qual o meu lucro de comprar o ativo hoje (expiry date), 
+				com a call option,
+				em comparação a se eu NÃO tivesse esperado pra comprar o ativo
+				(valor inicial = 1000)
+			  </p>
+              <p font-size="xx-small">rosa: qual o meu lucro de comprar o ativo hoje (expiry date), 
+				com a call option,
+                em comparação a se não a tivesse comprado e tivesse esperado para comprar o ativo
+				(valor a mercado)
+			  </p>
             </div>
           </section>
           <section>

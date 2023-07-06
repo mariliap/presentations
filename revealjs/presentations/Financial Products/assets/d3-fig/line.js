@@ -1,9 +1,8 @@
-function functionGrahph(profitFunctions, colors, xRange, yRange) {
+function functionGrahph(profitFunctions, funcParams, colors, xRange, yRange, canvasSize, areas) {
 
-  // Convention: https://bl.ocks.org/mbostock/3019563
-  const margin = { top: 10, right: 50, bottom: 50, left: 50 },
-    width = 450 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+  
+  width = canvasSize.width;
+  height = canvasSize.height;
 
   const svg = d3.select("body")
     .append('svg')
@@ -24,6 +23,12 @@ function functionGrahph(profitFunctions, colors, xRange, yRange) {
 
   let xScale = d3.scaleLinear(xRange, [0, width])
   let yScale = d3.scaleLinear(yRange, [height, 0])
+
+  let graph = {
+    svg: svg,
+    xScale: xScale,
+    yScale: yScale
+  };
 
   let xAxis = d3.axisBottom(xScale)
   let yAxis = d3.axisLeft(yScale)
@@ -57,11 +62,17 @@ function functionGrahph(profitFunctions, colors, xRange, yRange) {
     .html("profit");
 
 
-  addHorizontalLineAt(0, 'lineAtZero', svg, xScale, yScale, xRange)
+  addHorizontalLineAt('lineAtZero', graph, 0, 'white', xRange)
+  addVerticalLineAt('lineAtStrike', graph, funcParams.strikePrice, 'white', yRange)
+  
 
-  const hMovableLine = addHorizontalLineAt(yRange[0], 'hMovableLine', svg, xScale, yScale, xRange)
-  const vMovableLine = addVerticalLineAt(xRange[0], 'vMovableLine', svg, xScale, yScale, yRange)
-
+  const hMovableLine = 
+    addHorizontalLineAt('hMovableLine', graph, yRange[0], 'black', xRange)
+  const vMovableLine = 
+    addVerticalLineAt('vMovableLine', graph, xRange[0], 'black', yRange)
+  for(var i=0; i< areas.length; i++){
+    addArea(areas[i].id, graph, areas[i].x0, areas[i].x1, areas[i].color, areas[i].opacity, xRange, yRange)
+  }
 
   // Add function graph
   let line = d3.line()
@@ -74,12 +85,12 @@ function functionGrahph(profitFunctions, colors, xRange, yRange) {
   const focusTextArr = [];
   for (var i = 0; i < profitFunctions.length; i++) {
     //const data = graphFunction(profitComparedToStartDate);
-    const data = graphFunction(profitFunctions[i]);
+    const data = graphFunction(profitFunctions[i].function);
     svg.append("path")
       .datum(data)
       .attr("clip-path", "url(#chart-area)")
       .attr("fill", "none")
-      .attr("stroke", colors[i])
+      .attr("stroke", profitFunctions[i].color)
       .attr("stroke-width", 2)
       .attr("d", line);
     dataArr.push(data);
@@ -117,11 +128,7 @@ function functionGrahph(profitFunctions, colors, xRange, yRange) {
     .on('mousemove', (event) => mousemove(event, xScale, yScale, dataArr, focusCircleArr, focusTextArr, hMovableLine, vMovableLine, xRange, yRange))
     .on('mouseout', () => mouseout(focusCircleArr, focusTextArr, hMovableLine, vMovableLine));
 
-  return {
-    svg: svg,
-    xScale: xScale,
-    yScale: yScale
-  };
+  return graph;
 }
 
 
@@ -192,56 +199,141 @@ function mouseout(focusCircleArr, focusTextArr,
   vMovableLine.style("opacity", 0)
 }
 
-function addHorizontalLineAt(value, id, svg, xScale, yScale, xRange) {
+function addHorizontalLineAt(id, graph, value, color, xRange) {
   let lineAt = d3.line()
-    .x(d => xScale(d[0]))
-    .y(d => yScale(d[1]))
+    .x(d => graph.xScale(d[0]))
+    .y(d => graph.yScale(d[1]))
   const dataLineAt = [];
 
   for (let x = xRange[0]; x <= xRange[1]; x++) {
     dataLineAt.push([x, value])
   }
-  var lineElement = svg.append("path")
+  var lineElement = graph.svg.append("path")
     .datum(dataLineAt)
     .attr("id", id)
     .attr("clip-path", "url(#chart-area)")
     .attr("fill", "none")
-    .attr("stroke", "white")
+    .attr("stroke", color)
     .attr("stroke-width", 1)
     .style("stroke-dasharray", ("3, 3"))
     .attr("d", lineAt);
   return lineElement;
 }
 
-function addVerticalLineAt(value, id, svg, xScale, yScale, yRange) {
+function addVerticalLineAt(id, graph, value, color, yRange, crossingPoints) {
   let lineAt = d3.line()
-    .x(d => xScale(d[0]))
-    .y(d => yScale(d[1]))
+    .x(d => graph.xScale(d[0]))
+    .y(d => graph.yScale(d[1]))
   const dataLineAt = [];
 
   for (let y = yRange[0]; y <= yRange[1]; y++) {
     dataLineAt.push([value, y])
   }
-  var lineElement = svg.append("path")
+
+  // add the area if not exists
+  let element = graph.svg.select("#" + id);
+  if(element.empty()){
+    element = graph.svg.append("path")
+      .attr("id", id);
+  }
+  element
     .datum(dataLineAt)
-    .attr("id", id)
     .attr("clip-path", "url(#chart-area)")
     .attr("fill", "none")
-    .attr("stroke", "white")
+    .attr("stroke", color)
     .attr("stroke-width", 1)
     .style("stroke-dasharray", ("3, 3"))
     .attr("d", lineAt);
 
-  return lineElement;
+  if(crossingPoints){
+    let xPoint = value;
+    let yPoints = crossingPoints.getY(xPoint);
+    let yPointsColors = crossingPoints.colors;
+    graph.svg.selectAll(`g#${id}`).data([]).exit().remove()
+    const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
+    let repeated = toFindDuplicates(yPoints)
+    let processed = [];
+    for(let i=0; i< yPoints.length;i++){
+      
+      radius = repeated.includes(yPoints[i])? (!processed.includes(yPoints[i])? 5 : 3) : 4;
+      processed.push(yPoints[i])
+      circle = graph.svg
+        .append('g')
+        .attr("id", id)
+        .append('circle')
+        .style("fill", yPointsColors[i])
+        .attr("stroke", "none")
+        .attr('r', radius)
+        .style("opacity", 1)
+        .attr("cx", graph.xScale(xPoint))
+        .attr("cy", graph.yScale(yPoints[i]));
+
+      // let circle = graph.svg.selectAll(`g#${id}`).filter((d, index) => index === i)
+      // if(circle.empty()){
+      //   circle = graph.svg
+      //     .append('g')
+      //     .attr("id", id)
+      //     .append('circle')
+      //     .style("fill", yPointsColors[i])
+      //     .attr("stroke", "none")
+      //     .attr('r', 4)
+      //     .style("opacity", 1)
+      // }
+      // circle
+      //       .attr("cx", graph.xScale(xPoint))
+      //       .attr("cy", graph.yScale(yPoints[i]));
+      // console.log(graph.xScale(xPoint) +', '+ graph.yScale(yPoints[i]))
+    }
+  }
+
+  return element;
 }
 
-function removeHorizontalLineAt(id, svg) {
-  svg.select("#" + id).remove();
+function addArea(id, graph, x, xOffset, color, opacity, xRange, yRange){
+
+  var area = d3.area()
+    .x(d => graph.xScale(d[0]))// Position of both line breaks on the X axis
+    .y0(d => graph.yScale(yRange[0]))//.y0(canvasSize.height) /// Y position of bottom line breaks (400 = bottom of svg area)
+    .y1(d => graph.yScale(d[1]));// Y position of top line breaks
+
+
+  const data = []; 
+  data.push([x,yRange[1]]); 
+  data.push([x+xOffset,yRange[1]]); 
+
+  // add the area if not exists
+  let element = graph.svg.select("#" + id);
+  if(element.empty()){
+    element = graph.svg.append("path")
+      .attr("id", id);
+  }
+  element
+    .datum(data)
+    .attr("class", "areaColore1")
+    .attr("d", area)
+    .attr("fill", color)
+    .attr("opacity", opacity);
+
+  if(x == 0 && xOffset == 0){
+    element.attr("opacity", "0");
+  }
+
+  // // add the pattern
+  // svg.append("path")
+  //   .datum(data)
+  //   .attr("class", "area")
+  //   .attr("d", area)
+  //   .style('stroke', '#777777')
+  //   .attr("fill", "url(#whitecarbon2)");
+
+  return element;
 }
 
-function removeVerticalLineAt(id, svg) {
-  svg.select("#" + id).remove();
+function removeElement(id, svg) {
+  //svg.selectAll("#" + id).remove();
+  svg.selectAll("#" + id).data([]).exit().remove();
 }
+
 
 
 function moveHorizontalLine(yPosition, svg, xRange) {
