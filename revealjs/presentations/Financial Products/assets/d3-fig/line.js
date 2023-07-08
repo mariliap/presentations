@@ -1,16 +1,18 @@
-function functionGrahph(profitFunctions, funcParams, colors, xRange, yRange, canvasSize, areas) {
+function functionGrahph(profitFunctions, funcParams, axisDef, canvasSize, areas, includeLegends) {
 
   
-  width = canvasSize.width;
-  height = canvasSize.height;
+  width = canvasSize.width > 450? 450 : canvasSize.width ;
+  height = canvasSize.height > 400? 400 :  canvasSize.height;
 
-  const svg = d3.select("body")
+  const svg = d3.select("#graph")
     .append('svg')
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", canvasSize.width + margin.left + margin.right)
+    .attr("height", canvasSize.height + margin.top + margin.bottom)
+    .attr("class", "graph-svg-component")
     .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
+    .attr("transform", `translate(${margin.left}, ${margin.top})`)
+    
+  addGraphicDefinitions(svg)
   // Define chart area
   svg
     .append("clipPath")
@@ -20,9 +22,11 @@ function functionGrahph(profitFunctions, funcParams, colors, xRange, yRange, can
     .attr("y", 0)
     .attr("width", width)
     .attr("height", height)
+    
+    
 
-  let xScale = d3.scaleLinear(xRange, [0, width])
-  let yScale = d3.scaleLinear(yRange, [height, 0])
+  let xScale = d3.scaleLinear(axisDef.x.range, [0, width])
+  let yScale = d3.scaleLinear(axisDef.y.range, [height, 0])
 
   let graph = {
     svg: svg,
@@ -30,48 +34,23 @@ function functionGrahph(profitFunctions, funcParams, colors, xRange, yRange, can
     yScale: yScale
   };
 
-  let xAxis = d3.axisBottom(xScale)
-  let yAxis = d3.axisLeft(yScale)
+  appendAxis(graph, canvasSize, axisDef)
+  if(includeLegends){
+    appendLegends(graph, profitFunctions, canvasSize)
+  }
 
-  // Axis 
-  svg.append("g")
-    .attr("class", "axisWhite")
-    .attr("transform", `translate(0,${height})`)
-    .call(xAxis)
-  svg.append("g")
-    .attr("class", "axisWhite")
-    .attr("transform", `translate(0,0)`)
-    .call(yAxis)
-
-  // Axis label
-  svg.append("text")
-    .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", width / 2 + 5)
-    .attr("y", height + 35)
-    .style("fill", "white")
-    .text("market price");
-
-  svg.append("text")
-    .attr("class", "y label")
-    .attr("text-anchor", "end")
-    .attr("y", -35)
-    .attr("x", -height / 2)
-    .attr("transform", "rotate(-90)")
-    .style("fill", "white")
-    .html("profit");
-
-
-  addHorizontalLineAt('lineAtZero', graph, 0, 'white', xRange)
-  addVerticalLineAt('lineAtStrike', graph, funcParams.strikePrice, 'white', yRange)
+  addHorizontalLineAt('lineAtZero', graph, 0, 'white', axisDef.x.range)
+  addVerticalLineAt('lineAtStrike', graph, funcParams.strikePrice, 'white', axisDef.y.range)
   
 
   const hMovableLine = 
-    addHorizontalLineAt('hMovableLine', graph, yRange[0], 'black', xRange)
+     addHorizontalLineAt('hMovableLine', graph, axisDef.y.range[0], 'black', axisDef.x.range)
   const vMovableLine = 
-    addVerticalLineAt('vMovableLine', graph, xRange[0], 'black', yRange)
-  for(var i=0; i< areas.length; i++){
-    addArea(areas[i].id, graph, areas[i].x0, areas[i].x1, areas[i].color, areas[i].opacity, xRange, yRange)
+    addVerticalLineAt('vMovableLine', graph, axisDef.x.range[0], 'black', axisDef.y.range)
+  if(areas){
+    for(var i=0; i< areas.length; i++){
+      addArea(areas[i].id, graph, areas[i].x0, areas[i].x1, areas[i].color, areas[i].opacity, axisDef)
+    }
   }
 
   // Add function graph
@@ -85,8 +64,10 @@ function functionGrahph(profitFunctions, funcParams, colors, xRange, yRange, can
   const focusTextArr = [];
   for (var i = 0; i < profitFunctions.length; i++) {
     //const data = graphFunction(profitComparedToStartDate);
-    const data = graphFunction(profitFunctions[i].function);
+    const data = generateData(profitFunctions[i].function, axisDef.x.range);
+
     svg.append("path")
+      .attr("id", profitFunctions[i].id)
       .datum(data)
       .attr("clip-path", "url(#chart-area)")
       .attr("fill", "none")
@@ -125,22 +106,138 @@ function functionGrahph(profitFunctions, funcParams, colors, xRange, yRange, can
     .attr('width', width)
     .attr('height', height)
     .on('mouseover', () => mouseover(focusCircleArr, focusTextArr, hMovableLine, vMovableLine))
-    .on('mousemove', (event) => mousemove(event, xScale, yScale, dataArr, focusCircleArr, focusTextArr, hMovableLine, vMovableLine, xRange, yRange))
+    .on('mousemove', (event) => mousemove(event, xScale, yScale, dataArr, focusCircleArr, focusTextArr, hMovableLine, vMovableLine, axisDef))
     .on('mouseout', () => mouseout(focusCircleArr, focusTextArr, hMovableLine, vMovableLine));
 
   return graph;
 }
 
+function appendAxis(graph, canvasSize, axisDef){
+  let xAxis = d3.axisBottom(graph.xScale)
+  let yAxis = d3.axisLeft(graph.yScale)
 
-function graphFunction(profitFunction) {
-  pointNum = 5000;
+  // Axis x
+  graph.svg.append("g")
+    .attr("class", "axisWhite")
+    .attr("transform", `translate(0,${canvasSize.height})`)
+    .call(xAxis)
+
+  // Axis y
+  graph.svg.append("g")
+    .attr("class", "axisWhite")
+    .attr("transform", `translate(0,0)`)
+    .call(yAxis)
+
+  // Axis x label
+  graph.svg.append("g")
+    .attr('class', 'axisWhite')
+    .append("text")
+    .attr("text-anchor", "end")
+    .attr("x", canvasSize.width / 2 + 40)
+    .attr("y", canvasSize.height + 35)
+    //.style("fill", "white")
+    .text(axisDef.x.label);
+
+  // Axis y label
+  graph.svg.append("g")
+    .attr('class', 'axisWhite')
+    .append("text")
+    .attr("text-anchor", "end")
+    .attr("y", -35)
+    .attr("x", -(canvasSize.height-50) / 2)
+    .attr("transform", "rotate(-90)")
+    //.style("fill", "white")
+    .html(axisDef.y.label);
+}
+
+function appendLegends(graph, functions, canvasSize){
+
+  //var color = key => functions.find(f => f.id == key).color
+  var color = func => func.color
+  // d3.scaleOrdinal()
+  //   .domain(keys)
+  //   .range(d3.schemeSet2);
+
+  
+  lineHeight = 12
+  //const getTargetWidth = (text) => Math.sqrt(measureWidth(text.trim()) * lineHeight);
+  
+  // Add one dot in the legend for each name.
+  keys = functions.map(func => func.description)
+
+  
+
+  //graph.svg.selectAll("mydots")
+  let legendSvg = d3.select("#legend")
+  .append('svg')
+    .attr("width", canvasSize.width + margin.left + margin.right)
+    .attr("height", 170)
+    .attr("class", "graph-svg-component")
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`) 
+
+//  legendSvg.selectAll("mydots")
+//   .data(keys)
+//   .enter()
+//   .append("circle")
+//     .attr("cx", cx)
+//     .attr("cy", function(d,i){ return yx + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+//     .attr("r", 7)
+//     .style("fill", function(d){ return color(d)})
+
+  // Add one dot in the legend for each name.
+  //graph.svg.selectAll("mylabels")
+  let cx = -10
+  let yx = 0
+  marginTop=5
+  for(let i = 0; i < functions.length; i++){
+    
+    functions[i].description = getLines(functions[i].description, 200, 8)
+
+    legendSvg.selectAll("mylabels")
+    .data(functions[i].description)
+    .enter()
+    .append("text")
+      .attr("x", cx + 20)
+      .attr("y", function(d,i){ return yx + i*(lineHeight+marginTop)}) // yx is where the first dot appears. 25 is the distance between dots 
+      //.attr("font-size", (200 * 0.007) + "em")
+      .style("fill", functions[i].color)
+      .text(function(d){ return d.text})
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
+
+    legendSvg//.selectAll("mydots")
+    //.data(functions)
+    //.enter()
+    .append("circle")
+      .attr("cx", cx)
+      .attr("cy", function(d,i){ return yx+lineHeight + (i*marginTop)}) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("r", 7)
+      .style("fill", functions[i].color)
+
+    yx = yx + functions[i].description.length * (lineHeight+(1.5*marginTop));
+  }
+  
+}
+
+
+
+function generateData(profitFunction, xRange) {
 
   const data = [];
-  for (let x = 0; x <= pointNum; x++) {
+  for (let x = xRange[0]; x <= xRange[1]; x++) {
     y = profitFunction(x);
     data.push([x, y])
   }
   return data;
+}
+
+function getCrossingPoint (x, func) {
+  return {
+    x: x,
+    y: func.function(x),
+    color: func.color
+  }
 }
 
 // This allows to find the closest X index of the mouse:
@@ -159,7 +256,7 @@ function mouseover(focusCircleArr, focusTextArr,
 
 function mousemove(event, xScale, yScale,
   dataArr, focusCircleArr, focusTextArr,
-  hMovableLine, vMovableLine, xRange, yRange) {
+  hMovableLine, vMovableLine, axisDef) {
   // recover coordinate we need
   var x0 = xScale.invert(d3.pointer(event)[0]);
 
@@ -185,8 +282,8 @@ function mousemove(event, xScale, yScale,
 
   }
   var y0 = 100;
-  moveHorizontalLine(y0, hMovableLine, xRange)
-  moveVerticalLine(x0, vMovableLine, yRange)
+  moveHorizontalLine(y0, hMovableLine, axisDef.x.range)
+  moveVerticalLine(x0, vMovableLine, axisDef.y.range)
 }
 
 function mouseout(focusCircleArr, focusTextArr,
@@ -220,7 +317,7 @@ function addHorizontalLineAt(id, graph, value, color, xRange) {
   return lineElement;
 }
 
-function addVerticalLineAt(id, graph, value, color, yRange, crossingPoints) {
+function addVerticalLineAt(id, graph, value, color, yRange, functions) {
   let lineAt = d3.line()
     .x(d => graph.xScale(d[0]))
     .y(d => graph.yScale(d[1]))
@@ -245,61 +342,65 @@ function addVerticalLineAt(id, graph, value, color, yRange, crossingPoints) {
     .style("stroke-dasharray", ("3, 3"))
     .attr("d", lineAt);
 
-  if(crossingPoints){
-    let xPoint = value;
-    let yPoints = crossingPoints.getY(xPoint);
-    let yPointsColors = crossingPoints.colors;
+  if(functions){
+    // let xPoint = value;
+    // let yPoints = crossingPoints.getY(xPoint);
+    // let yPointsColors = crossingPoints.colors;
+
     graph.svg.selectAll(`g#${id}`).data([]).exit().remove()
-    const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
-    let repeated = toFindDuplicates(yPoints)
+
+    let points = [];
+    functions.forEach(func => {
+      points.push(getCrossingPoint(value, func));
+    });  
+    // const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
+    yList = points.map(point => point.y );
+    //const toFindDuplicates = arry => arry.filter((point, index) => yList.indexOf(point.y) !== index)
+    const toFindDuplicates = arry => 
+      arry
+        .filter((point, index) => yList.indexOf(point.y) !== index)
+        .map(point => point.y )
+
+    
+    let repeated = toFindDuplicates(points)
     let processed = [];
-    for(let i=0; i< yPoints.length;i++){
+    // for(let i=0; i< yPoints.length;i++){
+    for(let i=0; i< points.length;i++){
       
-      radius = repeated.includes(yPoints[i])? (!processed.includes(yPoints[i])? 5 : 3) : 4;
-      processed.push(yPoints[i])
+      //radius = repeated.includes(yPoints[i])? (!processed.includes(yPoints[i])? 5 : 3) : 4;
+      //processed.push(yPoints[i])
+      radius = repeated.includes(points[i].y)? (!processed.includes(points[i].y)? 5 : 3) : 4;
+      processed.push(points[i].y)
       circle = graph.svg
         .append('g')
         .attr("id", id)
         .append('circle')
-        .style("fill", yPointsColors[i])
+        // .style("fill", yPointsColors[i])
+        .style("fill", points[i].color)
         .attr("stroke", "none")
         .attr('r', radius)
         .style("opacity", 1)
-        .attr("cx", graph.xScale(xPoint))
-        .attr("cy", graph.yScale(yPoints[i]));
-
-      // let circle = graph.svg.selectAll(`g#${id}`).filter((d, index) => index === i)
-      // if(circle.empty()){
-      //   circle = graph.svg
-      //     .append('g')
-      //     .attr("id", id)
-      //     .append('circle')
-      //     .style("fill", yPointsColors[i])
-      //     .attr("stroke", "none")
-      //     .attr('r', 4)
-      //     .style("opacity", 1)
-      // }
-      // circle
-      //       .attr("cx", graph.xScale(xPoint))
-      //       .attr("cy", graph.yScale(yPoints[i]));
-      // console.log(graph.xScale(xPoint) +', '+ graph.yScale(yPoints[i]))
+        // .attr("cx", graph.xScale(xPoint))
+        // .attr("cy", graph.yScale(yPoints[i]))
+        .attr("cx", graph.xScale(points[i].x))
+        .attr("cy", graph.yScale(points[i].y))
     }
   }
 
   return element;
 }
 
-function addArea(id, graph, x, xOffset, color, opacity, xRange, yRange){
+function addArea(id, graph, x, xOffset, color, opacity, axisDef){
 
   var area = d3.area()
     .x(d => graph.xScale(d[0]))// Position of both line breaks on the X axis
-    .y0(d => graph.yScale(yRange[0]))//.y0(canvasSize.height) /// Y position of bottom line breaks (400 = bottom of svg area)
+    .y0(d => graph.yScale(axisDef.y.range[0]))//.y0(canvasSize.height) /// Y position of bottom line breaks (400 = bottom of svg area)
     .y1(d => graph.yScale(d[1]));// Y position of top line breaks
 
 
   const data = []; 
-  data.push([x,yRange[1]]); 
-  data.push([x+xOffset,yRange[1]]); 
+  data.push([x, axisDef.y.range[1]]); 
+  data.push([x+xOffset, axisDef.y.range[1]]); 
 
   // add the area if not exists
   let element = graph.svg.select("#" + id);
@@ -331,8 +432,138 @@ function addArea(id, graph, x, xOffset, color, opacity, xRange, yRange){
 
 function removeElement(id, svg) {
   //svg.selectAll("#" + id).remove();
-  svg.selectAll("#" + id).data([]).exit().remove();
+  if(svg){
+    svg.selectAll("#" + id).data([]).exit().remove();
+  } else {
+    d3.selectAll("#" + id).data([]).exit().remove();
+  }
 }
+
+function addExplanation(id, graph, description){
+  console.log('description: ' + description)
+
+  
+  let fontsize = 22
+  
+  let textLines = getLines(description, canvasSize.width, fontsize)
+  
+  let marginTop=5
+  let marginBottom = 10;
+  let cx = 0
+  let yx = marginTop
+  lineHeight= fontsize; //measureHeight('a', fontsize)
+  height = (textLines.length * (lineHeight + marginTop)) //+ marginBottom
+
+  let explainSvg = d3.select("#explain").select("svg")
+  if(explainSvg.empty()){
+    explainSvg = d3.select("#explain")
+    .append('svg')
+    .attr("id", id)
+    .attr("width", canvasSize.width + margin.left + margin.right)
+    .attr("height", height)
+    .attr("class", "graph-svg-component-explain")
+    .append("g")    
+    .attr("transform", `translate(${margin.left}, ${margin.top})`)    
+    
+  } else {
+    explainSvg.attr("height", height)
+    explainSvg = explainSvg.select("g")
+    explainSvg.selectAll(`text`).data([]).exit().remove()
+  }
+  
+  explainSvg.selectAll('textLines')
+    .data(textLines)
+    .enter()
+    .append("text")
+    .attr("x", cx)
+    .attr("y", function(d,i){ return yx + i*(lineHeight+marginTop)}) // yx is where the first dot appears. 25 is the distance between dots 
+    .attr("font-size", fontsize + "px")
+    .text(d => d.text)
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
+}
+
+const measureHeight = (text, fontSize) => {
+
+  const margin = 5;
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  context.font = fontSize + 'px' + context.font.split('px')[1]
+  const metrics = context.measureText(text);
+
+  let fontHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
+  let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+  return actualHeight + margin
+}
+const measureWidth = (text, fontSize) => {
+
+  const margin = 10;
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  //context.font = '5px';//(100 * 0.007) + "em";//fontSize + 'px';
+  context.font = fontSize + 'px' + context.font.split('px')[1]
+  const metrics = context.measureText(text);
+
+  return metrics.width + margin;
+}
+const getWords = (text) => {
+  const words = text.split(/\s+/g); // To hyphenate: /\s+|(?<=-)/
+  if (!words[words.length - 1]) words.pop();
+  if (!words[0]) words.shift();
+  return words;
+}
+const getLines = (text, targetWidth, fontSize) => {
+  let words = getWords(text)
+  let line;
+  let lineWidth0 = Infinity;
+  //let targetWidth = 200; //getTargetWidth(text)
+  const lines = [];
+  for (let i = 0, n = words.length; i < n; ++i) {
+    let lineText1 = (line ? line.text + " " : "") + words[i];
+    let lineWidth1 = measureWidth(lineText1, fontSize);
+    if ((lineWidth0 + lineWidth1) / 2 < targetWidth) {
+      line.width = lineWidth0 = lineWidth1;
+      line.text = lineText1;
+    } else {
+      lineWidth0 = measureWidth(words[i], fontSize);
+      line = {width: lineWidth0, text: words[i]};
+      lines.push(line);
+    }
+  }
+  return lines;
+}
+
+function addGraphicDefinitions(svg){
+   //Container for the gradients
+   var defs = svg.append("defs");
+
+   //Add fFilter for the outside glow
+   var filter = defs.append("filter")
+       .attr("id","glow");
+   filter.append("feGaussianBlur")
+       .attr("stdDeviation","3.5")
+       .attr("result","coloredBlur");
+   var feMerge = filter.append("feMerge");
+   feMerge.append("feMergeNode")
+       .attr("in","coloredBlur");
+   feMerge.append("feMergeNode")
+       .attr("in","SourceGraphic");
+ 
+}
+
+function addHighlightToLine(graph, func){
+ 
+  graph.svg.select("#" + func.id)
+  .attr("stroke-width", 4)
+  .style("filter", "url(#glow)")
+}
+function removeHighlightOfLine(graph, func){
+  graph.svg.select("#" + func.id)
+  .attr("stroke-width", 2)
+  .style("filter", null)
+}
+
 
 
 
