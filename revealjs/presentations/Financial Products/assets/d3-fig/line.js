@@ -1,8 +1,8 @@
-function functionGrahph(profitFunctions, funcParams, axisDef, canvasSize, areas, includeLegends) {
+function drawGrahph(profitFunctions, funcParams, axisDef, canvasSize, areas, includeLegends) {
 
-  
-  width = canvasSize.width > 450? 450 : canvasSize.width ;
-  height = canvasSize.height > 400? 400 :  canvasSize.height;
+
+  width = canvasSize.width > 450 ? 450 : canvasSize.width;
+  height = canvasSize.height > 400 ? 400 : canvasSize.height;
 
   const svg = d3.select("#graph")
     .append('svg')
@@ -11,7 +11,7 @@ function functionGrahph(profitFunctions, funcParams, axisDef, canvasSize, areas,
     .attr("class", "graph-svg-component")
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`)
-    
+
   addGraphicDefinitions(svg)
   // Define chart area
   svg
@@ -22,8 +22,8 @@ function functionGrahph(profitFunctions, funcParams, axisDef, canvasSize, areas,
     .attr("y", 0)
     .attr("width", width)
     .attr("height", height)
-    
-    
+
+
 
   let xScale = d3.scaleLinear(axisDef.x.range, [0, width])
   let yScale = d3.scaleLinear(axisDef.y.range, [height, 0])
@@ -35,20 +35,20 @@ function functionGrahph(profitFunctions, funcParams, axisDef, canvasSize, areas,
   };
 
   appendAxis(graph, canvasSize, axisDef)
-  if(includeLegends){
+  if (includeLegends) {
     appendLegends(graph, profitFunctions, canvasSize)
   }
 
   addHorizontalLineAt('lineAtZero', graph, 0, 'white', axisDef.x.range)
   addVerticalLineAt('lineAtStrike', graph, funcParams.strikePrice, 'white', axisDef.y.range)
-  
 
-  const hMovableLine = 
-     addHorizontalLineAt('hMovableLine', graph, axisDef.y.range[0], 'black', axisDef.x.range)
-  const vMovableLine = 
+
+  const hMovableLine =
+    addHorizontalLineAt('hMovableLine', graph, axisDef.y.range[0], 'black', axisDef.x.range)
+  const vMovableLine =
     addVerticalLineAt('vMovableLine', graph, axisDef.x.range[0], 'black', axisDef.y.range)
-  if(areas){
-    for(var i=0; i< areas.length; i++){
+  if (areas) {
+    for (var i = 0; i < areas.length; i++) {
       addArea(areas[i].id, graph, areas[i].x0, areas[i].x1, areas[i].color, areas[i].opacity, axisDef)
     }
   }
@@ -112,7 +112,7 @@ function functionGrahph(profitFunctions, funcParams, axisDef, canvasSize, areas,
   return graph;
 }
 
-function appendAxis(graph, canvasSize, axisDef){
+function appendAxis(graph, canvasSize, axisDef) {
   let xAxis = d3.axisBottom(graph.xScale)
   let yAxis = d3.axisLeft(graph.yScale)
 
@@ -144,13 +144,13 @@ function appendAxis(graph, canvasSize, axisDef){
     .append("text")
     .attr("text-anchor", "end")
     .attr("y", -35)
-    .attr("x", -(canvasSize.height-50) / 2)
+    .attr("x", -(canvasSize.height - 50) / 2)
     .attr("transform", "rotate(-90)")
     //.style("fill", "white")
     .html(axisDef.y.label);
 }
 
-function appendLegends(graph, functions, canvasSize){
+function appendLegends(graph, functions, canvasSize) {
 
   //var color = key => functions.find(f => f.id == key).color
   var color = func => func.color
@@ -158,66 +158,66 @@ function appendLegends(graph, functions, canvasSize){
   //   .domain(keys)
   //   .range(d3.schemeSet2);
 
-  
+
   lineHeight = 12
   //const getTargetWidth = (text) => Math.sqrt(measureWidth(text.trim()) * lineHeight);
-  
+
   // Add one dot in the legend for each name.
   keys = functions.map(func => func.description)
 
-  
+
 
   //graph.svg.selectAll("mydots")
   let legendSvg = d3.select("#legend")
-  .append('svg')
+    .append('svg')
     .attr("width", canvasSize.width + margin.left + margin.right)
     .attr("height", 170)
     .attr("class", "graph-svg-component")
     .append("g")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`) 
+    .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
-//  legendSvg.selectAll("mydots")
-//   .data(keys)
-//   .enter()
-//   .append("circle")
-//     .attr("cx", cx)
-//     .attr("cy", function(d,i){ return yx + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
-//     .attr("r", 7)
-//     .style("fill", function(d){ return color(d)})
+  //  legendSvg.selectAll("mydots")
+  //   .data(keys)
+  //   .enter()
+  //   .append("circle")
+  //     .attr("cx", cx)
+  //     .attr("cy", function(d,i){ return yx + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+  //     .attr("r", 7)
+  //     .style("fill", function(d){ return color(d)})
 
   // Add one dot in the legend for each name.
   //graph.svg.selectAll("mylabels")
   let cx = -10
   let yx = 0
-  marginTop=5
-  for(let i = 0; i < functions.length; i++){
-    
+  marginTop = 5
+  for (let i = 0; i < functions.length; i++) {
+
     functions[i].description = getLines(functions[i].description, 200, 8)
 
     legendSvg.selectAll("mylabels")
-    .data(functions[i].description)
-    .enter()
-    .append("text")
+      .data(functions[i].description)
+      .enter()
+      .append("text")
       .attr("x", cx + 20)
-      .attr("y", function(d,i){ return yx + i*(lineHeight+marginTop)}) // yx is where the first dot appears. 25 is the distance between dots 
+      .attr("y", function (d, i) { return yx + i * (lineHeight + marginTop) }) // yx is where the first dot appears. 25 is the distance between dots 
       //.attr("font-size", (200 * 0.007) + "em")
       .style("fill", functions[i].color)
-      .text(function(d){ return d.text})
+      .text(function (d) { return d.text })
       .attr("text-anchor", "left")
       .style("alignment-baseline", "middle")
 
     legendSvg//.selectAll("mydots")
-    //.data(functions)
-    //.enter()
-    .append("circle")
+      //.data(functions)
+      //.enter()
+      .append("circle")
       .attr("cx", cx)
-      .attr("cy", function(d,i){ return yx+lineHeight + (i*marginTop)}) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("cy", function (d, i) { return yx + lineHeight + (i * marginTop) }) // 100 is where the first dot appears. 25 is the distance between dots
       .attr("r", 7)
       .style("fill", functions[i].color)
 
-    yx = yx + functions[i].description.length * (lineHeight+(1.5*marginTop));
+    yx = yx + functions[i].description.length * (lineHeight + (1.5 * marginTop));
   }
-  
+
 }
 
 
@@ -232,7 +232,7 @@ function generateData(profitFunction, xRange) {
   return data;
 }
 
-function getCrossingPoint (x, func) {
+function getCrossingPoint(x, func) {
   return {
     x: x,
     y: func.function(x),
@@ -329,7 +329,7 @@ function addVerticalLineAt(id, graph, value, color, yRange, functions) {
 
   // add the area if not exists
   let element = graph.svg.select("#" + id);
-  if(element.empty()){
+  if (element.empty()) {
     element = graph.svg.append("path")
       .attr("id", id);
   }
@@ -342,7 +342,7 @@ function addVerticalLineAt(id, graph, value, color, yRange, functions) {
     .style("stroke-dasharray", ("3, 3"))
     .attr("d", lineAt);
 
-  if(functions){
+  if (functions) {
     // let xPoint = value;
     // let yPoints = crossingPoints.getY(xPoint);
     // let yPointsColors = crossingPoints.colors;
@@ -352,24 +352,24 @@ function addVerticalLineAt(id, graph, value, color, yRange, functions) {
     let points = [];
     functions.forEach(func => {
       points.push(getCrossingPoint(value, func));
-    });  
+    });
     // const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
-    yList = points.map(point => point.y );
+    yList = points.map(point => point.y);
     //const toFindDuplicates = arry => arry.filter((point, index) => yList.indexOf(point.y) !== index)
-    const toFindDuplicates = arry => 
+    const toFindDuplicates = arry =>
       arry
         .filter((point, index) => yList.indexOf(point.y) !== index)
-        .map(point => point.y )
+        .map(point => point.y)
 
-    
+
     let repeated = toFindDuplicates(points)
     let processed = [];
     // for(let i=0; i< yPoints.length;i++){
-    for(let i=0; i< points.length;i++){
-      
+    for (let i = 0; i < points.length; i++) {
+
       //radius = repeated.includes(yPoints[i])? (!processed.includes(yPoints[i])? 5 : 3) : 4;
       //processed.push(yPoints[i])
-      radius = repeated.includes(points[i].y)? (!processed.includes(points[i].y)? 5 : 3) : 4;
+      radius = repeated.includes(points[i].y) ? (!processed.includes(points[i].y) ? 5 : 3) : 4;
       processed.push(points[i].y)
       circle = graph.svg
         .append('g')
@@ -390,7 +390,7 @@ function addVerticalLineAt(id, graph, value, color, yRange, functions) {
   return element;
 }
 
-function addArea(id, graph, x, xOffset, color, opacity, axisDef){
+function addArea(id, graph, x, xOffset, color, opacity, axisDef) {
 
   var area = d3.area()
     .x(d => graph.xScale(d[0]))// Position of both line breaks on the X axis
@@ -398,13 +398,13 @@ function addArea(id, graph, x, xOffset, color, opacity, axisDef){
     .y1(d => graph.yScale(d[1]));// Y position of top line breaks
 
 
-  const data = []; 
-  data.push([x, axisDef.y.range[1]]); 
-  data.push([x+xOffset, axisDef.y.range[1]]); 
+  const data = [];
+  data.push([x, axisDef.y.range[1]]);
+  data.push([x + xOffset, axisDef.y.range[1]]);
 
   // add the area if not exists
   let element = graph.svg.select("#" + id);
-  if(element.empty()){
+  if (element.empty()) {
     element = graph.svg.append("path")
       .attr("id", id);
   }
@@ -415,7 +415,7 @@ function addArea(id, graph, x, xOffset, color, opacity, axisDef){
     .attr("fill", color)
     .attr("opacity", opacity);
 
-  if(x == 0 && xOffset == 0){
+  if (x == 0 && xOffset == 0) {
     element.attr("opacity", "0");
   }
 
@@ -432,57 +432,80 @@ function addArea(id, graph, x, xOffset, color, opacity, axisDef){
 
 function removeElement(id, svg) {
   //svg.selectAll("#" + id).remove();
-  if(svg){
+  if (svg) {
     svg.selectAll("#" + id).data([]).exit().remove();
   } else {
     d3.selectAll("#" + id).data([]).exit().remove();
   }
 }
 
-function addExplanation(id, graph, description){
+function addExplanation(id, graph, description) {
   console.log('description: ' + description)
 
-  
+  let minFontsize = 16
   let fontsize = 22
-  
-  let textLines = getLines(description, canvasSize.width, fontsize)
-  
-  let marginTop=5
+
+  let marginTop = 5
+  let textLinesObj = getLinesInMaxFontSize(minFontsize, fontsize, marginTop, description)
+  let textLines = textLinesObj.textLines;//getLines(description, canvasSize.width, fontsize)
+
+  // let marginTop = 5
   let marginBottom = 10;
   let cx = 0
   let yx = marginTop
-  lineHeight= fontsize; //measureHeight('a', fontsize)
-  height = (textLines.length * (lineHeight + marginTop)) //+ marginBottom
+  lineHeight = textLinesObj.fontsize; //measureHeight('a', fontsize)
+
+  height = textLinesObj.height;//(textLines.length * (lineHeight + marginTop)) //+ marginBottom
+  let htest = measureHeight(description, lineHeight)
 
   let explainSvg = d3.select("#explain").select("svg")
-  if(explainSvg.empty()){
+  if (explainSvg.empty()) {
     explainSvg = d3.select("#explain")
-    .append('svg')
-    .attr("id", id)
-    .attr("width", canvasSize.width + margin.left + margin.right)
-    .attr("height", height)
-    .attr("class", "graph-svg-component-explain")
-    .append("g")    
-    .attr("transform", `translate(${margin.left}, ${margin.top})`)    
-    
+      .append('svg')
+      .attr("id", id)
+      .attr("width", canvasSize.width + margin.left + margin.right)
+      .attr("height", height)
+      .attr("class", "graph-svg-component-explain")
+      .append("g")
+      .attr("transform", `translate(${margin.left}, ${margin.top})`)
+
   } else {
     explainSvg.attr("height", height)
     explainSvg = explainSvg.select("g")
     explainSvg.selectAll(`text`).data([]).exit().remove()
   }
-  
+
   explainSvg.selectAll('textLines')
     .data(textLines)
     .enter()
     .append("text")
     .attr("x", cx)
-    .attr("y", function(d,i){ return yx + i*(lineHeight+marginTop)}) // yx is where the first dot appears. 25 is the distance between dots 
+    .attr("y", function (d, i) { return yx + i * (lineHeight + marginTop) }) // yx is where the first dot appears. 25 is the distance between dots 
     .attr("font-size", fontsize + "px")
     .text(d => d.text)
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
 }
 
+const getLinesInMaxFontSize = (minFontsize, fontsize, marginTop, description) => {
+  const availableHeight = d3.select("body").node().parentNode.clientHeight
+    - d3.select("#graph").node().getBoundingClientRect().height;
+
+  let result = {
+    textLines: [],
+    height: availableHeight + 1,
+    fontsize: fontsize,
+  }
+
+  while (result.height > availableHeight && result.fontsize >= minFontsize) {
+    result.textLines = getLines(description, canvasSize.width, result.fontsize)
+    result.height = (result.textLines.length * (result.fontsize + marginTop))
+    result.fontsize = result.fontsize - 1;
+  }
+  result.fontsize = result.fontsize + 1;
+
+  return result;
+}
 const measureHeight = (text, fontSize) => {
 
   const margin = 5;
@@ -527,41 +550,41 @@ const getLines = (text, targetWidth, fontSize) => {
       line.text = lineText1;
     } else {
       lineWidth0 = measureWidth(words[i], fontSize);
-      line = {width: lineWidth0, text: words[i]};
+      line = { width: lineWidth0, text: words[i] };
       lines.push(line);
     }
   }
   return lines;
 }
 
-function addGraphicDefinitions(svg){
-   //Container for the gradients
-   var defs = svg.append("defs");
+function addGraphicDefinitions(svg) {
+  //Container for the gradients
+  var defs = svg.append("defs");
 
-   //Add fFilter for the outside glow
-   var filter = defs.append("filter")
-       .attr("id","glow");
-   filter.append("feGaussianBlur")
-       .attr("stdDeviation","3.5")
-       .attr("result","coloredBlur");
-   var feMerge = filter.append("feMerge");
-   feMerge.append("feMergeNode")
-       .attr("in","coloredBlur");
-   feMerge.append("feMergeNode")
-       .attr("in","SourceGraphic");
- 
+  //Add fFilter for the outside glow
+  var filter = defs.append("filter")
+    .attr("id", "glow");
+  filter.append("feGaussianBlur")
+    .attr("stdDeviation", "3.5")
+    .attr("result", "coloredBlur");
+  var feMerge = filter.append("feMerge");
+  feMerge.append("feMergeNode")
+    .attr("in", "coloredBlur");
+  feMerge.append("feMergeNode")
+    .attr("in", "SourceGraphic");
+
 }
 
-function addHighlightToLine(graph, func){
- 
+function addHighlightToLine(graph, func) {
+
   graph.svg.select("#" + func.id)
-  .attr("stroke-width", 4)
-  .style("filter", "url(#glow)")
+    .attr("stroke-width", 4)
+    .style("filter", "url(#glow)")
 }
-function removeHighlightOfLine(graph, func){
+function removeHighlightOfLine(graph, func) {
   graph.svg.select("#" + func.id)
-  .attr("stroke-width", 2)
-  .style("filter", null)
+    .attr("stroke-width", 2)
+    .style("filter", null)
 }
 
 

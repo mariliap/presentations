@@ -1,38 +1,41 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>Derivatives</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="../../presentation-base/dist/reset.css">
-		<link rel="stylesheet" href="../../presentation-base/dist/reveal.css">
-		<link rel="stylesheet" href="./assets/themes/moon-night-exadel.css" id="theme">
+  <title>Derivatives</title>
 
-		<link rel="stylesheet" href="./assets/css/arquitetura-e-parcerias.css" id="this-presentation-theme">
-    <link rel="stylesheet" href="./assets/css/custom-gc.css" id="custom-gc">
+  <link rel="stylesheet" href="../../presentation-base/dist/reset.css">
+  <link rel="stylesheet" href="../../presentation-base/dist/reveal.css">
+  <link rel="stylesheet" href="./assets/themes/moon-night-exadel.css" id="theme">
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="../../presentation-base/plugin/highlight/monokai.css" id="highlight-theme">
-	</head>
-	<body> 
-		<div class="reveal">
-			<div class="slides">
-				<section>
-					<a href="https://revealjs.com">
-						<img src="./assets/img/eparcerias-logo.png" alt="logo" style="height: 180px; margin: 0 auto 4rem auto; background: transparent;" class="demo-logo">
-					</a>
-					
-					<h2>Titulo</h2>
-					<h3>Subtitulo</h3>
-					<h5>Lugar</h5>
-					<p>
-						<small>Criado por <a href="">Marília Portela de Lima</a></small>
-					</p>
-				</section>
+  <link rel="stylesheet" href="./assets/css/arquitetura-e-parcerias.css" id="this-presentation-theme">
+  <link rel="stylesheet" href="./assets/css/custom-gc.css" id="custom-gc">
 
-				<!-- <section>
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="../../presentation-base/plugin/highlight/monokai.css" id="highlight-theme">
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <a href="https://revealjs.com">
+          <img src="./assets/img/presentation-logo.png" alt="logo"
+            style="height: 180px; margin: 0 auto 4rem auto; background: transparent;" class="demo-logo">
+        </a>
+
+        <h2>Titulo</h2>
+        <h3>Subtitulo</h3>
+        <h5>Lugar</h5>
+        <p>
+          <small>Criado por <a href="">Marília Portela de Lima</a></small>
+        </p>
+      </section>
+
+      <!-- <section>
 					<h2>Introdução</h2>
 				</section>
 
@@ -202,61 +205,186 @@
 					
 				</section> -->
 
-				
-				
-				
-				<section>
-				<section>
-					<h2>Options</h2>
-					<h4>Call Options</h4>
-					<img class="r-frame" style="background: rgba(255,255,255,0.1);" width="178" height="238"
-					data-src="https://static.slid.es/reveal/arrow.png" alt="Down arrow">
-				</section>
-				<section>
-					<h2>Options</h2>
-					<h4>Call Options</h4>
-					<div class="row no-margin-top">
-					<div class="col-50 no-margin-top">
-						<p style="text-align: center">Long Call</p>
-						<div class="fig-container no-margin-top" data-file="./assets/d3-fig/long-call-option.html"></div>
-					</div>
-					<div class="col-50 no-margin-top">
-						<p style="text-align: center">Short Call</p>
-						<div class="fig-container no-margin-top" data-file="./assets/d3-fig/short-call-option.html"></div>
-					</div>
-					<!-- <button class="btn-large btn-warning" id="recolorButton">Recolorize</button> -->
-						
-					
-					</div>
-				</section>
-				</section>
-				<section>
-					<section>
-					<h2>Options</h2>
-					<h4>Put Options</h4>
-					<p>hkhjk</p>
-					<img class="r-frame" style="background: rgba(255,255,255,0.1);" width="178" height="238"
-						data-src="https://static.slid.es/reveal/arrow.png" alt="Down arrow">
-					</section>
-					<section>
-					<h2>Options</h2>
-					<h4>Put Options</h4>
-					<div class="row no-margin-top">
-						<div class="col-50 no-margin-top">
-							<p style="text-align: center">Long Put</p>
-							<div class="fig-container no-margin-top" data-file="./assets/d3-fig/long-put-option.html"></div>
-						</div>
-						<div class="col-50 no-margin-top">
-							<p style="text-align: center">Short Put</p>
-							<div class="fig-container no-margin-top" data-file="./assets/d3-fig/short-put-option.html"></div>
-						</div>
-					</div>
-					</section>
-				</section>
-				<section>
-					<div class="fig-container" data-file="./assets/d3-fig/gooey.html"></div>
-				</section>
-				<!-- <section>
+
+
+
+      <section>
+        <section>
+          <h2>Options</h2>
+          <h4>Call Options</h4>
+          <img class="r-frame" style="background: rgba(255,255,255,0.1);" width="178" height="238"
+            data-src="https://static.slid.es/reveal/arrow.png" alt="Down arrow">
+        </section>
+        <section>
+          <h2>Options</h2>
+          <div style="display: flex">
+            <h4>Call Options</h4>
+            <div style="display: flex; margin-left: 0.4em; 
+                     margin-bottom: 0.4em; padding-right: 0.4em; 
+                     background: rgba(255, 255, 255, 0.05);">
+              <label for="callStartPriceInput">Start Price:</label>
+              <div style="display: flex; flex-direction: column;">
+                <output id="callStartPriceOutput">1000</output>
+                <input type="range" id="callStartPriceInput" value="1000" min="850" max="1150" step="30"
+                  oninput="callStartPriceOutput.value = callStartPriceInput.value" list="callStartPriceInputTickmarks">
+                <datalist id="callStartPriceInputTickmarks">
+                  <option value="850"></option>
+                  <option value="880"></option>
+                  <option value="910"></option>
+                  <option value="940"></option>
+                  <option value="970"></option>
+                  <option value="1000"></option>
+                  <option value="1030"></option>
+                  <option value="1060"></option>
+                  <option value="1090"></option>
+                  <option value="1120"></option>
+                  <option value="1150"></option>
+                </datalist>
+              </div>
+              <label for="callPremiumInput">Premium:</label>
+              <div style="display: flex; flex-direction: column;">
+                <output id="callPremiumOutput">100</output>
+                <input type="range" id="callPremiumInput" value="100" min="50" max="150" step="10"
+                  oninput="callPremiumOutput.value = callPremiumInput.value" list="callPremiumInputTickmarks">
+                <datalist id="callPremiumInputTickmarks">
+                  <option value="50"></option>
+                  <option value="60"></option>
+                  <option value="70"></option>
+                  <option value="80"></option>
+                  <option value="90"></option>
+                  <option value="100"></option>
+                  <option value="110"></option>
+                  <option value="120"></option>
+                  <option value="130"></option>
+                  <option value="140"></option>
+                  <option value="150"></option>
+                </datalist>
+              </div>
+              <label for="callStrikePriceInput">Strike Price:</label>
+              <div style="display: flex; flex-direction: column;">
+                <output id="callStrikePriceOutput">1000</output>
+                <input type="range" id="callStrikePriceInput" value="1000" min="850" max="1150" step="30"
+                  oninput="callStrikePriceOutput.value = callStrikePriceInput.value"
+                  list="callStrikePriceInputTickmarks">
+                <datalist id="callStrikePriceInputTickmarks">
+                  <option value="850"></option>
+                  <option value="880"></option>
+                  <option value="910"></option>
+                  <option value="940"></option>
+                  <option value="970"></option>
+                  <option value="1000"></option>
+                  <option value="1030"></option>
+                  <option value="1060"></option>
+                  <option value="1090"></option>
+                  <option value="1120"></option>
+                  <option value="1150"></option>
+                </datalist>
+              </div>
+            </div>
+          </div>
+          <div class="row no-margin-top">
+            <div class="col-50 no-margin-top">
+              <p style="text-align: center">Long Call</p>
+              <div class="fig-container no-margin-top" data-file="./assets/d3-fig/long-call-option.html"></div>
+            </div>
+            <div class="col-50 no-margin-top">
+              <p style="text-align: center">Short Call</p>
+              <div class="fig-container no-margin-top" data-file="./assets/d3-fig/short-call-option.html"></div>
+            </div>
+            <!-- <button class="btn-large btn-warning" id="recolorButton">Recolorize</button> -->
+          </div>
+        </section>
+      </section>
+      <section>
+        <section>
+          <h2>Options</h2>
+          <h4>Put Options</h4>
+          <p>hkhjk</p>
+          <img class="r-frame" style="background: rgba(255,255,255,0.1);" width="178" height="238"
+            data-src="https://static.slid.es/reveal/arrow.png" alt="Down arrow">
+        </section>
+        <section>
+          <h2>Options</h2>
+          <div style="display: flex">
+            <h4>Put Options</h4>
+            <div style="display: flex; margin-left: 0.4em; 
+                               margin-bottom: 0.4em; padding-right: 0.4em; 
+                               background: rgba(255, 255, 255, 0.05);">
+              <label for="putStartPriceInput">Start Price:</label>
+              <div style="display: flex; flex-direction: column;">
+                <output id="putStartPriceOutput">1000</output>
+                <input type="range" id="putStartPriceInput" value="1000" min="850" max="1150" step="30"
+                  oninput="putStartPriceOutput.value = putStartPriceInput.value" list="putStartPriceInputTickmarks">
+                <datalist id="putStartPriceInputTickmarks">
+                  <option value="850"></option>
+                  <option value="880"></option>
+                  <option value="910"></option>
+                  <option value="940"></option>
+                  <option value="970"></option>
+                  <option value="1000"></option>
+                  <option value="1030"></option>
+                  <option value="1060"></option>
+                  <option value="1090"></option>
+                  <option value="1120"></option>
+                  <option value="1150"></option>
+                </datalist>
+              </div>
+              <label for="putPremiumInput">Premium:</label>
+              <div style="display: flex; flex-direction: column;">
+                <output id="putPremiumOutput">100</output>
+                <input type="range" id="putPremiumInput" value="100" min="50" max="150" step="10"
+                  oninput="putPremiumOutput.value = putPremiumInput.value" list="putPremiumInputTickmarks">
+                <datalist id="putPremiumInputTickmarks">
+                  <option value="50"></option>
+                  <option value="60"></option>
+                  <option value="70"></option>
+                  <option value="80"></option>
+                  <option value="90"></option>
+                  <option value="100"></option>
+                  <option value="110"></option>
+                  <option value="120"></option>
+                  <option value="130"></option>
+                  <option value="140"></option>
+                  <option value="150"></option>
+                </datalist>
+              </div>
+              <label for="putStrikePriceInput">Strike Price:</label>
+              <div style="display: flex; flex-direction: column;">
+                <output id="putStrikePriceOutput">1000</output>
+                <input type="range" id="putStrikePriceInput" value="1000" min="850" max="1150" step="30"
+                  oninput="putStrikePriceOutput.value = putStrikePriceInput.value" list="putStrikePriceInputTickmarks">
+                <datalist id="putStrikePriceInputTickmarks">
+                  <option value="850"></option>
+                  <option value="880"></option>
+                  <option value="910"></option>
+                  <option value="940"></option>
+                  <option value="970"></option>
+                  <option value="1000"></option>
+                  <option value="1030"></option>
+                  <option value="1060"></option>
+                  <option value="1090"></option>
+                  <option value="1120"></option>
+                  <option value="1150"></option>
+                </datalist>
+              </div>
+            </div>
+          </div>
+          <div class="row no-margin-top">
+            <div class="col-50 no-margin-top">
+              <p style="text-align: center">Long Put</p>
+              <div class="fig-container no-margin-top" data-file="./assets/d3-fig/long-put-option.html"></div>
+            </div>
+            <div class="col-50 no-margin-top">
+              <p style="text-align: center">Short Put</p>
+              <div class="fig-container no-margin-top" data-file="./assets/d3-fig/short-put-option.html"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <section>
+        <div class="fig-container" data-file="./assets/d3-fig/gooey.html"></div>
+      </section>
+      <!-- <section>
 					<h3>Independent transitions</h3> 
 					
 					 <div class="row no-margin-top" >
@@ -277,67 +405,68 @@
 					</div>
 				</section>
 				-->
-			</div>  
-		</div>
+    </div>
+  </div>
 
-		<script src="../../presentation-base/dist/reveal.js"></script>
-		<script src="../../presentation-base/plugin/notes/notes.js"></script>
-		<script src="../../presentation-base/plugin/markdown/markdown.js"></script>
-		<script src="../../presentation-base/plugin/highlight/highlight.js"></script>
+  <script src="../../presentation-base/dist/reveal.js"></script>
+  <script src="../../presentation-base/plugin/notes/notes.js"></script>
+  <script src="../../presentation-base/plugin/markdown/markdown.js"></script>
+  <script src="../../presentation-base/plugin/highlight/highlight.js"></script>
 
-		<script src="../../presentation-base/plugin/math/math.js"></script>
-		<script src="../../presentation-base/plugin/d3/reveald3.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
-				
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath, Reveald3 ],
-				
-				controls: true,
-				progress: true,
-				history: true,
-				center: false,
-				transition: 'fade',
-				viewDistance: 3, // to lazy load iframes
+  <script src="../../presentation-base/plugin/math/math.js"></script>
+  <script src="../../presentation-base/plugin/d3/reveald3.js"></script>
+  <script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+      hash: true,
 
-				
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath, Reveald3],
 
-				// // optional configurations for reveald3
-				reveald3: {
+      controls: true,
+      progress: true,
+      history: true,
+      center: false,
+      transition: 'fade',
+      viewDistance: 3, // to lazy load iframes
 
-					 // If the previous slide is a slide further in the deck (i.e. we come back to
-					 // slide from the next slide), by default the last fragment transition will be
-					 // triggered to to get the last state of the visualization and simulate the
-					 // the state the simulation was in when we left the slide. This can be
-					 // discarded.
-					 runLastState: true, //default true
 
-					 // If a special onSlideChanged transition has been set (if for example the visualization
-					 // has been preloaded using the data-preload attribute, and you want a specific transition
-					 // to happen only when you arrive on the slide), you can choose the delay with which such 
-					 // a transition will occur (note that in the case of no data-preload, if no delay is set then
-					 // the transition might not occur since the iframe might not be fully loaded yet when the 
-					 // function is triggered). // default 0. 
-					 onSlideChangedDelay: 400,
 
-					 // This will prefix the path attributes of the source html paths with the given path.
-					 // (by default "src" if set to true or with the specified path if string)
-					 mapPath: false, // default: false
+      // // optional configurations for reveald3
+      reveald3: {
 
-					 // If true, will try to locate the file at a fallback url without the mapPath prefix in case no file is found
-					 // at the stipulated url with mapPath
-					 tryFallbackURL: false, //default false
+        // If the previous slide is a slide further in the deck (i.e. we come back to
+        // slide from the next slide), by default the last fragment transition will be
+        // triggered to to get the last state of the visualization and simulate the
+        // the state the simulation was in when we left the slide. This can be
+        // discarded.
+        runLastState: true, //default true
 
-					 // Checking for file existance has been reported to fail in rare 
-					 // cases though files did exist. This option is to disable the file checking.
-					 //see: https://github.com/gcalmettes/reveal.js-d3/issues/10
-					 disableCheckFile: false, //default false,
-				},
-			});
-		</script>
-	</body>
+        // If a special onSlideChanged transition has been set (if for example the visualization
+        // has been preloaded using the data-preload attribute, and you want a specific transition
+        // to happen only when you arrive on the slide), you can choose the delay with which such 
+        // a transition will occur (note that in the case of no data-preload, if no delay is set then
+        // the transition might not occur since the iframe might not be fully loaded yet when the 
+        // function is triggered). // default 0. 
+        onSlideChangedDelay: 400,
+
+        // This will prefix the path attributes of the source html paths with the given path.
+        // (by default "src" if set to true or with the specified path if string)
+        mapPath: false, // default: false
+
+        // If true, will try to locate the file at a fallback url without the mapPath prefix in case no file is found
+        // at the stipulated url with mapPath
+        tryFallbackURL: false, //default false
+
+        // Checking for file existance has been reported to fail in rare 
+        // cases though files did exist. This option is to disable the file checking.
+        //see: https://github.com/gcalmettes/reveal.js-d3/issues/10
+        disableCheckFile: false, //default false,
+      },
+    });
+  </script>
+</body>
+
 </html>

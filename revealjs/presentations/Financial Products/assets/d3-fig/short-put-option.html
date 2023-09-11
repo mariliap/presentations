@@ -5,11 +5,11 @@
 </head>
 
 <style>
-
   .container {
     display: flex;
     justify-content: center;
   }
+
   .axisWhite line {
     stroke: white;
   }
@@ -17,6 +17,7 @@
   .axisWhite path {
     stroke: white;
   }
+
   /* a classe so se aplica se for um 'text' dentro de um 'g', 
   e o elemento que deve ter a classe é o 'g'*/
   .axisWhite text {
@@ -25,27 +26,34 @@
 
 
   .graph-svg-component {
-    background-color: none /* aliceblue;*/ /*none*/
+    background-color: none
+      /* aliceblue;*/
+      /*none*/
   }
+
   .graph-svg-component-leg {
-    background-color:  black; /*none*/
+    background-color: black;
+    /*none*/
   }
+
   .graph-svg-component-explain {
-    background-color:  none; /*none*/
-    font-family:"Montserrat";
-    fill:#eee8d5;
+    background-color: none;
+    /*none*/
+    font-family: "Montserrat";
+    fill: #eee8d5;
   }
 </style>
 
 <script src="js/d3.v7.min.js"></script>
 <script src="line.js"></script>
 <script src="Scenario.js"></script>
+
 <body>
   <div id="graph" class="container"></div>
   <div id="legend" class="container"></div>
   <div id="explain" class="container"></div>
-  
- <script>
+
+  <script>
 
     let funcParams = {
       startPrice: 1000,
@@ -54,7 +62,7 @@
     }
 
     function calculateBuyingPrice(marketPrice) {
-      
+
       let price = marketPrice;
       if (marketPrice < funcParams.strikePrice) {
         price = funcParams.strikePrice;
@@ -65,7 +73,7 @@
     }
 
     function profitComparedToMarketDateNotUsingCallOption(marketPrice) {
-      let profitComparedToMarketDate = funcParams.startPrice - marketPrice; 
+      let profitComparedToMarketDate = funcParams.startPrice - marketPrice;
       return profitComparedToMarketDate;
     }
 
@@ -81,7 +89,7 @@
       return profitComparedToMarketDate;
     }
 
-   
+
     // Convention: https://bl.ocks.org/mbostock/3019563
     const margin = { top: 10, right: 50, bottom: 50, left: 50 }
     const canvasSize = {
@@ -91,14 +99,14 @@
 
     const canvasDef = {
       margin: { top: 10, right: 50, bottom: 50, left: 50 },
-      size : {
+      size: {
         width: 450 - margin.left - margin.right,
         height: 400 - margin.top - margin.bottom
       }
     }
 
     const axisDef = {
-      x:{
+      x: {
         range: [700, 1300],
         label: 'market price'
       },
@@ -107,7 +115,7 @@
         label: 'profit'
       }
     }
-   
+
     const profitFunctions = [
       {
         id: 'f1',
@@ -137,41 +145,41 @@
                       esperado para comprar o ativo a valor de mercado hoje 
                       sem a Put`
       },
-      
+
     ]
     let areas = [
       {
-        id:'area1', 
-        color:'grey', 
+        id: 'area1',
+        color: 'grey',
         opacity: 0, //mudar opacidade para aparecer 
-        x0: axisDef.x.range[0], 
+        x0: axisDef.x.range[0],
         x1: funcParams.strikePrice - axisDef.x.range[0] - funcParams.premium,
         y0: axisDef.y.range[0],
         y1: axisDef.y.range[1]
       },
       {
-        id:'area2', 
-        color:'goldenrod', 
+        id: 'area2',
+        color: 'goldenrod',
         opacity: 0, //mudar opacidade para aparecer 
-        x0: funcParams.strikePrice - funcParams.premium, 
+        x0: funcParams.strikePrice - funcParams.premium,
         x1: funcParams.premium,
         y0: axisDef.y.range[0],
         y1: axisDef.y.range[1]
       },
       {
-        id:'area3', 
-        color:'goldenrod', 
+        id: 'area3',
+        color: 'goldenrod',
         opacity: 0, //mudar opacidade para aparecer 
-        x0: funcParams.strikePrice, 
+        x0: funcParams.strikePrice,
         x1: funcParams.premium,
         y0: axisDef.y.range[0],
         y1: axisDef.y.range[1]
       },
       {
-        id:'area4', 
-        color:'grey',
+        id: 'area4',
+        color: 'grey',
         opacity: 0, //mudar opacidade para aparecer 
-        x0: funcParams.strikePrice + funcParams.premium, 
+        x0: funcParams.strikePrice + funcParams.premium,
         x1: axisDef.x.range[1] - funcParams.strikePrice - funcParams.premium,
         y0: axisDef.y.range[0],
         y1: axisDef.y.range[1]
@@ -179,9 +187,9 @@
     ]
 
     const showlegend = false;
-    const graph = functionGrahph(profitFunctions, funcParams, 
-                                 axisDef, canvasSize, areas, 
-                                 showlegend)
+    const graph = drawGrahph(profitFunctions, funcParams,
+      axisDef, canvasSize, areas,
+      showlegend)
 
     //SCENARIOS 
     const s1 = new Scenario(
@@ -190,7 +198,7 @@
                       sed do eiusmod tempor incididunt ut labore et dolore magna 
                       aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
                       ullamco laboris nisi ut aliquip ex ea commodo consequat.`,
-        x: funcParams.strikePrice - funcParams.premium - (funcParams.premium/2),
+        x: funcParams.strikePrice - funcParams.premium - (funcParams.premium / 2),
         functions: profitFunctions,
         axisDef: axisDef,
         graph: graph,
@@ -198,7 +206,7 @@
     )
     const s2 = new Scenario(
       {
-        description: 'description scenario 02', 
+        description: 'description scenario 02',
         x: funcParams.strikePrice - funcParams.premium,
         functions: profitFunctions,
         axisDef: axisDef,
@@ -207,8 +215,8 @@
     )
     const s3 = new Scenario(
       {
-        description: 'description scenario 03', 
-        x: funcParams.strikePrice - (funcParams.premium/2),
+        description: 'description scenario 03',
+        x: funcParams.strikePrice - (funcParams.premium / 2),
         functions: profitFunctions,
         axisDef: axisDef,
         graph: graph,
@@ -216,7 +224,7 @@
     )
     const s4 = new Scenario(
       {
-        description: 'description scenario 04', 
+        description: 'description scenario 04',
         x: funcParams.strikePrice,
         functions: profitFunctions,
         axisDef: axisDef,
@@ -225,8 +233,8 @@
     )
     const s5 = new Scenario(
       {
-        description: 'description scenario 05', 
-        x: funcParams.strikePrice + (funcParams.premium/2),
+        description: 'description scenario 05',
+        x: funcParams.strikePrice + (funcParams.premium / 2),
         functions: profitFunctions,
         axisDef: axisDef,
         graph: graph,
@@ -234,7 +242,7 @@
     )
     const s6 = new Scenario(
       {
-        description: 'description scenario 06', 
+        description: 'description scenario 06',
         x: funcParams.strikePrice + funcParams.premium,
         functions: profitFunctions,
         axisDef: axisDef,
@@ -243,8 +251,8 @@
     )
     const s7 = new Scenario(
       {
-        description: 'description scenario 07', 
-        x: funcParams.strikePrice + funcParams.premium + (funcParams.premium/2),
+        description: 'description scenario 07',
+        x: funcParams.strikePrice + funcParams.premium + (funcParams.premium / 2),
         functions: profitFunctions,
         axisDef: axisDef,
         graph: graph,
@@ -252,7 +260,7 @@
     )
     const s8 = new Scenario(
       {
-        description: '', 
+        description: '',
         x: 0,
         functions: profitFunctions,
         axisDef: axisDef,
@@ -261,15 +269,15 @@
     )
     const scenarios = [s1, s2, s3, s4, s5, s6, s7, s8]
 
-   
-   
+
+
     //TRANSITIONS  
     var _transitions = [
       {
-        transitionForward: () =>  {
+        transitionForward: () => {
           addHighlightToLine(graph, profitFunctions[0])
           addExplanation('funcExplain', graph, profitFunctions[0].description);
-        }, 
+        },
         transitionBackward: () => {
           removeHighlightOfLine(graph, profitFunctions[0])
           removeElement('funcExplain')
@@ -277,11 +285,11 @@
         index: 1
       },
       {
-        transitionForward: () =>  {
+        transitionForward: () => {
           removeHighlightOfLine(graph, profitFunctions[0])
           addHighlightToLine(graph, profitFunctions[1])
           addExplanation('funcExplain', graph, profitFunctions[1].description);
-        }, 
+        },
         transitionBackward: () => {
           removeHighlightOfLine(graph, profitFunctions[1])
           addHighlightToLine(graph, profitFunctions[0])
@@ -290,11 +298,11 @@
         index: 2
       },
       {
-        transitionForward: () =>  {
+        transitionForward: () => {
           removeHighlightOfLine(graph, profitFunctions[1])
           addHighlightToLine(graph, profitFunctions[2])
           addExplanation('funcExplain', graph, profitFunctions[2].description);
-        }, 
+        },
         transitionBackward: () => {
           removeHighlightOfLine(graph, profitFunctions[2])
           addHighlightToLine(graph, profitFunctions[1])
@@ -303,10 +311,10 @@
         index: 3
       },
       {
-        transitionForward: () =>  {
+        transitionForward: () => {
           removeHighlightOfLine(graph, profitFunctions[2])
           removeElement('funcExplain')
-        }, 
+        },
         index: 4
       },
       {
@@ -316,42 +324,42 @@
         //it's recommended passing such function bound to this. 
         //E.g. myFunction.bind(this)
         //parameter of bind sets the "this" obj in the function
-        transitionForward: scenarios[0].enter.bind(scenarios[0]), 
+        transitionForward: scenarios[0].enter.bind(scenarios[0]),
         transitionBackward: scenarios[0].exit.bind(scenarios[0]),
         index: 5
       },
       {
-        transitionForward: scenarios[1].enter.bind(scenarios[1]), 
+        transitionForward: scenarios[1].enter.bind(scenarios[1]),
         transitionBackward: scenarios[0].enter.bind(scenarios[0]),
         index: 6
       },
       {
-        transitionForward: scenarios[2].enter.bind(scenarios[2]), 
+        transitionForward: scenarios[2].enter.bind(scenarios[2]),
         transitionBackward: scenarios[1].enter.bind(scenarios[1]),
         index: 7
       },
       {
-        transitionForward: scenarios[3].enter.bind(scenarios[3]), 
+        transitionForward: scenarios[3].enter.bind(scenarios[3]),
         transitionBackward: scenarios[2].enter.bind(scenarios[2]),
         index: 8
       },
       {
-        transitionForward: scenarios[4].enter.bind(scenarios[4]), 
+        transitionForward: scenarios[4].enter.bind(scenarios[4]),
         transitionBackward: scenarios[3].enter.bind(scenarios[3]),
         index: 9
       },
       {
-        transitionForward: scenarios[5].enter.bind(scenarios[5]), 
+        transitionForward: scenarios[5].enter.bind(scenarios[5]),
         transitionBackward: scenarios[4].enter.bind(scenarios[4]),
         index: 10
       },
       {
-        transitionForward: scenarios[6].enter.bind(scenarios[6]), 
+        transitionForward: scenarios[6].enter.bind(scenarios[6]),
         transitionBackward: scenarios[5].enter.bind(scenarios[5]),
         index: 11
       },
       {
-        transitionForward: scenarios[7].exit.bind(scenarios[7]), 
+        transitionForward: scenarios[7].exit.bind(scenarios[7]),
         transitionBackward: scenarios[6].enter.bind(scenarios[6]),
         index: 12
       }
