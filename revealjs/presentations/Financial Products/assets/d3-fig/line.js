@@ -446,7 +446,7 @@ function addExplanation(id, graph, description) {
   let fontsize = 22
 
   let marginTop = 5
-  let textLinesObj = getLinesInMaxFontSize(minFontsize, fontsize, marginTop, description)
+  let textLinesObj = getLinesInMaxFontSize(minFontsize, 400, marginTop, description)
   let textLines = textLinesObj.textLines;//getLines(description, canvasSize.width, fontsize)
 
   // let marginTop = 5
@@ -460,14 +460,31 @@ function addExplanation(id, graph, description) {
 
   let explainSvg = d3.select("#explain").select("svg")
   if (explainSvg.empty()) {
+    // explainSvg = d3.select("#explain")
+    //   .append('svg')
+    //   .attr("id", id)
+    //   .attr("width", canvasSize.width + margin.left + margin.right)
+    //   .attr("height", height)
+    //   .attr("class", "graph-svg-component-explain")
+    //   .append("g")
+    //   .attr("transform", `translate(${margin.left}, ${margin.top})`)
+
     explainSvg = d3.select("#explain")
-      .append('svg')
+      //.append("div")
+      // Container class to make it responsive.
+      .classed("graph-svg-component-explain", true) 
+      .append("svg")
       .attr("id", id)
-      .attr("width", canvasSize.width + margin.left + margin.right)
-      .attr("height", height)
-      .attr("class", "graph-svg-component-explain")
+      // Responsive SVG needs these 2 attributes and no width and height attr.
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .attr("viewBox", `0 0 ${(canvasSize.width + margin.left + margin.right)} ${height}`)
+      // Class to make it responsive.
+      .classed("graph-svg-component-explain-content-responsive", true)
+      // Fill visualization attributes.
+      // .attr("width", canvasSize.width + margin.left + margin.right)
+      //.attr("height", height)
       .append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`)
+      .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
   } else {
     explainSvg.attr("height", height)
@@ -487,22 +504,21 @@ function addExplanation(id, graph, description) {
     .style("alignment-baseline", "middle")
 }
 
-const getLinesInMaxFontSize = (minFontsize, fontsize, marginTop, description) => {
+const getLinesInMaxFontSize = (minFontsize, width, marginTop, description) => {
   const availableHeight = d3.select("body").node().parentNode.clientHeight
     - d3.select("#graph").node().getBoundingClientRect().height;
 
   let result = {
     textLines: [],
     height: availableHeight + 1,
-    fontsize: fontsize,
+    fontsize: 99,
   }
 
-  while (result.height > availableHeight && result.fontsize >= minFontsize) {
-    result.textLines = getLines(description, canvasSize.width, result.fontsize)
-    result.height = (result.textLines.length * (result.fontsize + marginTop))
+  while (result.height >= availableHeight && result.fontsize >= minFontsize) {
     result.fontsize = result.fontsize - 1;
+    result.textLines = getLines(description, width, result.fontsize)
+    result.height = (result.textLines.length * (result.fontsize + marginTop))
   }
-  result.fontsize = result.fontsize + 1;
 
   return result;
 }

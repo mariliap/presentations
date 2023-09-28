@@ -33,14 +33,39 @@
 
   .graph-svg-component-leg {
     background-color: black;
-    /*none*/
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
   }
+
+  .graph-svg-component-leg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  }
+
 
   .graph-svg-component-explain {
     background-color: none;
     /*none*/
     font-family: "Montserrat";
     fill: #eee8d5;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+  }
+
+  .graph-svg-component-explain-content-responsive {
+    display: inline-block;
+    position: absolute;
+    left: 0;
   }
 </style>
 

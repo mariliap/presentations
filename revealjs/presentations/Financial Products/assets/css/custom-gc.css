@@ -1296,9 +1296,9 @@ input[type=range] {
   width: 6em;
 }
 
-option {
+/* option {
   color: #f0ad4e;
-}
+} */
 
 input[type=range]::-webkit-slider-runnable-track {
   /* width: 10em; */
